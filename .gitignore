@@ -1,1 +1,10 @@
+# to shadow executables on linux(with no extentions)
+*
+!*/
+!*.*
+
+# then the other stuff
 .vscode
+*.exe
+
+
