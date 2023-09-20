@@ -1,4 +1,4 @@
-#include "headers/other.h"
+#include "../headers/other.h"
 
 #ifdef _WIN32
 #include <windows.h>

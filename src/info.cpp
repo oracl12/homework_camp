@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include "../headers/info.h"
 
 #ifdef _WIN32
 #include <winsock2.h>

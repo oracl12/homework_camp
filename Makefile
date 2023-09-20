@@ -1,4 +1,5 @@
 CC := g++
+SRC_DIR := src
 
 ifeq ($(OS),Windows_NT)
 CFLAGS := -lws2_32 -std=c++11
@@ -10,18 +11,18 @@ DEBUG_CFLAGS := -g
 
 all: client server
 
-client: client.cpp info.cpp socket_utils.cpp other.cpp
+client: client.cpp $(SRC_DIR)/info.cpp $(SRC_DIR)/socket_utils.cpp $(SRC_DIR)/other.cpp
 	$(CC) $^ -o $@ $(CFLAGS)
 
-server: server.cpp socket_utils.cpp other.cpp
+server: server.cpp $(SRC_DIR)/socket_utils.cpp $(SRC_DIR)/other.cpp
 	$(CC) $^ -o $@ $(CFLAGS)
 
 debug: client_debug server_debug
 
-client_debug: client.cpp info.cpp socket_utils.cpp other.cpp
+client_debug: client.cpp $(SRC_DIR)/info.cpp $(SRC_DIR)/socket_utils.cpp $(SRC_DIR)/other.cpp
 	$(CC) $(DEBUG_CFLAGS) $^ -o $@ $(CFLAGS)
 
-server_debug: server.cpp socket_utils.cpp other.cpp
+server_debug: server.cpp $(SRC_DIR)/socket_utils.cpp $(SRC_DIR)/other.cpp
 	$(CC) $(DEBUG_CFLAGS) $^ -o $@ $(CFLAGS)
 
 clean:
@@ -36,4 +37,3 @@ else
 	rm -f client_debug
 	rm -f server_debug
 endif
-
