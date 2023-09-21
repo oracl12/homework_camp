@@ -2,11 +2,12 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#else 
+#else
 #include <unistd.h>
 #endif
 
-void sleepForFiveSeconds(){
+void sleepForFiveSeconds()
+{
 #ifdef _WIN32
         Sleep(5000);
 #else

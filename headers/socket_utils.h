@@ -28,11 +28,13 @@ void WSAStartupIfNeeded();
 
 int initsSocket();
 
-void bindSocket(int socket, struct sockaddr* serverAddr, int size);
+sockaddr_in getServerAddr();
 
-void listenToSocket(int socket, int max_clients);
+void bindSocket(int socket);
 
-void connectToSocket(int socket, struct sockaddr* serverAddr, int size);
+void listenToSocket(int socket);
 
-char* getIp(sockaddr_in* sin_addr);
+void connectToSocket(int socket);
+
+char *getIp(sockaddr_in *sin_addr);
 #endif

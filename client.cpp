@@ -11,44 +11,41 @@
 #include <arpa/inet.h>
 #endif
 
-int main() {
+int main()
+{
     std::cout << "STARTING CLIENT" << std::endl;
 
     WSAStartupIfNeeded();
 
     int clientSocket = initsSocket();
 
-    sockaddr_in serverAddr;
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(PORT);
-    serverAddr.sin_addr.s_addr = inet_addr(IP_SERVER);
-
-    connectToSocket(clientSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+    connectToSocket(clientSocket);
 
     std::cout << "Connected to the server." << std::endl;
 
-    while (true) {
+    while (true)
+    {
         std::cout << "SENDING DATA" << std::endl;
-        char* info = getUnifiedData();
+        SystemInfo sysInfo;
+        std::string info = sysInfo.getUnifiedData();
 
-        if (info == nullptr) {
-            info = "SMTH WENT WRONG";
-        }
+        int bytesSent = send(clientSocket, info.c_str(), info.size(), 0);
 
-        int bytesSent = send(clientSocket, info, strlen(info), 0);
-        delete[] info;
-
-        if (bytesSent <= 0) {
+        if (bytesSent <= 0)
+        {
             std::cerr << "Server is dead" << std::endl;
             break;
         }
 
         char buffer[128];
         ssize_t bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
-        if (bytesRead <= 0) {
+        if (bytesRead <= 0)
+        {
             std::cerr << "Server is dead" << std::endl;
             break;
-        } else {
+        }
+        else
+        {
             std::cout << "Success." << std::endl;
         }
 

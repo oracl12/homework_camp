@@ -24,7 +24,8 @@ int serverSocket;
 void removeThread(std::thread::id id)
 {
     std::lock_guard<std::mutex> lock(clientsGuard);
-    auto iter = std::find_if(clients.begin(), clients.end(), [=](std::thread &t) { return (t.get_id() == id); });
+    auto iter = std::find_if(clients.begin(), clients.end(), [=](std::thread &t)
+                             { return (t.get_id() == id); });
     if (iter != clients.end())
     {
         iter->detach();
@@ -32,7 +33,7 @@ void removeThread(std::thread::id id)
     }
 }
 
-void handleClient(int clientSocket, char* ip)
+void handleClient(int clientSocket, char *ip)
 {
     std::cout << "Client connected." << std::endl;
 
@@ -40,11 +41,12 @@ void handleClient(int clientSocket, char* ip)
     {
         {
             std::lock_guard<std::mutex> lock(stopConditionGuard);
-            if (stopAllInstances) {
+            if (stopAllInstances)
+            {
                 closeSocket(clientSocket);
                 return;
             }
-         }
+        }
 
         char buffer[256];
         int bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
@@ -53,11 +55,14 @@ void handleClient(int clientSocket, char* ip)
         {
             std::cout << "User " << ip << " --- " << buffer << std::endl;
 
-            const char* response = "Server is alive!";
+            const char *response = "Server is alive!";
             ssize_t bytesSent = send(clientSocket, response, strlen(response), 0);
-            if (bytesSent == SOCKET_ERROR) {
+            if (bytesSent == SOCKET_ERROR)
+            {
                 std::cerr << "Error sending response." << std::endl;
-            } else {
+            }
+            else
+            {
                 std::cout << "Sent response to client." << std::endl;
             }
             continue;
@@ -74,9 +79,9 @@ void handleClient(int clientSocket, char* ip)
 void stopAllClientInstances()
 {
     std::lock_guard<std::mutex> lock(clientsGuard);
-    for (std::thread& instance : clients)
+    for (std::thread &instance : clients)
     {
-        std::cout << "Joining thread with id "  << instance.get_id() << std::endl;
+        std::cout << "Joining thread with id " << instance.get_id() << std::endl;
         instance.join();
     }
     clients.clear();
@@ -95,12 +100,13 @@ void ctrlHandler(int signal)
 #endif
         std::cout << "Ctrl+C received. Stopping all instances..." << std::endl;
 
-        { 
+        {
             std::lock_guard<std::mutex> lock(stopConditionGuard);
             stopAllInstances = true;
         }
 
-        if (serverSocket > 0) {
+        if (serverSocket > 0)
+        {
             closeSocket(serverSocket);
         }
 
@@ -113,7 +119,6 @@ void ctrlHandler(int signal)
     return TRUE;
 #endif
 }
-
 
 int main()
 {
@@ -133,14 +138,9 @@ int main()
 
     serverSocket = initsSocket();
 
-    sockaddr_in serverAddr;
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(PORT);
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
+    bindSocket(serverSocket);
 
-    bindSocket(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
-
-    listenToSocket(serverSocket, MAX_CLIENTS);
+    listenToSocket(serverSocket);
 
     std::cout << "Server is listening on port " << PORT << "..." << std::endl;
 
@@ -158,7 +158,8 @@ int main()
         {
             std::cerr << "Server is shutting down. Rejecting new connections." << std::endl;
 
-            if (clientSocket != INVALID_SOCKET) {
+            if (clientSocket != INVALID_SOCKET)
+            {
                 closeSocket(clientSocket);
             }
             break;
